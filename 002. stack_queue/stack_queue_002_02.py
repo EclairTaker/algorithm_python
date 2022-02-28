@@ -1,41 +1,22 @@
 def solution(priorities, location):
     answer = 0
-    priority = priorities
-
-    # Queue 내 최고 priority check
-    my_prio = priority[location]
-    temp = 0
-
-    while(len(priority)!=0):
-        max_prio = max(priority)
-        cur_prio = priority[0]
-        # 어쨌든 상관없이 미뤄야 함
-        if (cur_prio < max_prio):
-            priority.pop(0)
-            priority.append(cur_prio)
-            # 목표 문서가 cur_doc이였다면
-            if (location == 0):
-                location = len(priority) - 1
-            # 목표 문서가 current가 아닐 경우, location != 0
-            else:
-                location -= 1
-        # cur_prio >= max_prio, max_prio보다 클 수는 없기에 cur_prio == max_prio일 경우
+    # enumerate를 활용, location값을 고유 idx값으로 간직한 priority 정보를 구성
+    # 이 녀석이 Queue 역할을 수행
+    prio = [(idx, pri) for idx, pri in enumerate(priorities)]
+    
+    # Queue가 끝나지 않는 이상 반복문 수행
+    while (len(prio) != 0):
+        cur = prio.pop(0)
+        # any()를 활용하여 prio값이 현재 값보다 클 경우 = 값을 미룬다
+        if any(cur[1] < max[1] for max in prio):
+            prio.append(cur)
+        # 출력 수행
         else:
-            if (cur_prio > my_prio):
-                priority.pop(0)
-                location -= 1
-                # 출력이 수행되었으니까
-                temp += 1
-            # cur_prio == my_prio == max_prio일 경우
-            else:
-                priority.pop(0)
-                temp += 1
-                if (location == 0):
-                    answer = temp
-                    break
-                else:
-                    location -= 1
-        print(temp)
+            answer += 1
+            # [0]의 고유 idx값을 고유 location 식별값으로 활용 구분한다
+            if (cur[0] == location):
+                break
+    
     return answer
 
 def main()  :
